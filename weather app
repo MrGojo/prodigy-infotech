@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+
+.input-container {
+    margin-bottom: 20px;
+}
+
+#location-input {
+    padding: 10px;
+    width: calc(100% - 24px);
+    margin-bottom: 10px;
+}
+
+#get-weather-btn {
+    padding: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.weather-info {
+    margin-top: 20px;
+}
+
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+        <div class="input-container">
+            <input type="text" id="location-input" placeholder="Enter location">
+            <button id="get-weather-btn">Get Weather</button>
+        </div>
+        <div class="weather-info">
+            <h2 id="location-name"></h2>
+            <p id="weather-conditions"></p>
+            <p id="temperature"></p>
+            <p id="humidity"></p>
+            <p id="wind-speed"></p>
+        </div>
+    </div>
+
+    <script>
+        const apiKey = '557d57a74b7a5c26ef8c74f25a39e51e';
+
+document.getElementById('get-weather-btn').addEventListener('click', () => {
+    const location = document.getElementById('location-input').value;
+    getWeather(location);
+});
+
+function getWeather(location) {
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apiKey}&units=metric`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.cod === 200) {
+                displayWeather(data);
+            } else {
+                alert('Location not found. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching weather data:', error);
+        });
+}
+
+function displayWeather(data) {
+    const locationName = document.getElementById('location-name');
+    const weatherConditions = document.getElementById('weather-conditions');
+    const temperature = document.getElementById('temperature');
+    const humidity = document.getElementById('humidity');
+    const windSpeed = document.getElementById('wind-speed');
+
+    locationName.textContent = data.name + ', ' + data.sys.country;
+    weatherConditions.textContent = data.weather[0].description;
+    temperature.textContent = 'Temperature: ' + data.main.temp + '°C';
+    humidity.textContent = 'Humidity: ' + data.main.humidity + '%';
+    windSpeed.textContent = 'Wind Speed: ' + data.wind.speed + ' m/s';
+}
+
+
+    </script>
+</body>
+</html>
